@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.documentmanagement.dto.DocumentDTO;
 import com.app.documentmanagement.entities.Document;
 import com.app.documentmanagement.services.DocumentService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.PutMapping;
 
 
@@ -27,25 +30,23 @@ public class DocumentController {
     private DocumentService documentService;
 
     @GetMapping
-    public List<DocumentDTO> getAllDocuments() {
-        return documentService.getAllDocuments();
+    public ResponseEntity<List<DocumentDTO>> getAllDocuments() {
+        return ResponseEntity.status(HttpStatus.OK).body(documentService.getAllDocuments());
     }
 
     @GetMapping("/{id}")
-    public DocumentDTO getDocumentById(@PathVariable long id) {
-        return documentService.getDocumentById(id);
+    public ResponseEntity<DocumentDTO> getDocumentById(@PathVariable long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(documentService.getDocumentById(id));
     }
 
     @PostMapping
-    public Document saveDocument(@RequestBody Document document) {
-        System.out.println("doc = "+document.toString());
-        
-        return documentService.saveDocument(document);
+    public ResponseEntity<DocumentDTO> saveDocument(@Valid @RequestBody DocumentDTO documentDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(documentService.saveDocument(documentDto));
     }
 
     @PutMapping("/{id}")
-    public Document updateDocument(@PathVariable long id, @RequestBody Document document) {
-        return documentService.updateDocument(id, document);
+    public ResponseEntity<DocumentDTO> updateDocument(@PathVariable long id, @RequestBody DocumentDTO documentDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(documentService.updateDocument(id, documentDto));
     }
 
     @DeleteMapping("/{id}")
