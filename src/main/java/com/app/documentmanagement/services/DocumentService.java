@@ -49,32 +49,11 @@ public class DocumentService {
     }
 
     public List<DocumentDTO> getAllDocuments() {
-        return documentRepository.findAll().stream().map(document-> {
-            List<AuthorDTO> authorDtos = document.getAuthors().stream()
-                        .map(author -> new AuthorDTO(author.getId(), author.getFirstName(),
-                                                    author.getLastName())).toList();
-            List<ReferenceDTO> referenceDtos = document.getReferences().stream()
-                        .map(reference -> new ReferenceDTO(reference.getId(),reference.getReference()))
-                        .toList();
-            DocumentDTO documentDto = new DocumentDTO(document.getId(), document.getTitle(),
-                            document.getBody(), referenceDtos, authorDtos);
-            return documentDto;
-        })
-        .toList();
+        return documentRepository.findAll().stream().map(document-> convertEntityToDTO(document)).toList();
     }
 
     public DocumentDTO getDocumentById(long id) {
-        return documentRepository.findById(id).map(document-> {
-            List<AuthorDTO> authorDtos = document.getAuthors().stream()
-                    .map(author -> new AuthorDTO(author.getId(), author.getFirstName(),
-                                                author.getLastName())).toList();
-            List<ReferenceDTO> referenceDtos = document.getReferences().stream()
-                    .map(reference -> new ReferenceDTO(reference.getId(),reference.getReference()))
-                    .toList();
-            DocumentDTO documentDto = new DocumentDTO(document.getId(), document.getTitle(),
-            document.getBody(), referenceDtos, authorDtos);
-            return documentDto;
-        }).orElseThrow(()-> new DocumentNotFoundException("No Such Document Exists with id "+id));
+        return documentRepository.findById(id).map(document-> convertEntityToDTO(document)).orElseThrow(()-> new DocumentNotFoundException("No Such Document Exists with id "+id));
     }
 
     public DocumentDTO updateDocument(long id, DocumentDTO documentDto) {

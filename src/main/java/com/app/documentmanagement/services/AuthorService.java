@@ -20,6 +20,8 @@ import com.app.documentmanagement.exceptions.DocumentNotFoundException;
 import com.app.documentmanagement.repositories.AuthorRepository;
 import com.app.documentmanagement.repositories.DocumentRepository;
 
+import org.modelmapper.ModelMapper;
+
 @Service
 public class AuthorService {
     
@@ -30,73 +32,43 @@ public class AuthorService {
 
     @Autowired
     private DocumentRepository documentRepository;
-    /*
-    public Author saveAuthor(Author author){
-        return authorRepository.save(author);
-    }*/
+
+    @Autowired
+    private ModelMapper modelMapper;
     
-    public String saveAuthor(Author author){
-        if(author.getFirstName() == null || author.getLastName() == null){
+    public AuthorDTO saveAuthor(AuthorDTO authorDto){
+        if(authorDto.getFirstName() == null || authorDto.getLastName() == null){
             throw new AuthorNullValueException("First Name and Last Name must be provided");
         }
-        Author authorDB = authorRepository.findByFirstNameAndLastName(author.getFirstName(), author.getLastName());
+        Author authorDB = authorRepository.findByFirstNameAndLastName(authorDto.getFirstName(), authorDto.getLastName());
         if(authorDB != null){
             throw new AuthorAlreadyExistsException("Author with same First and Last name already exists");
         }
-        
-        if(author.getDocuments() !=null && author.getDocuments().size()>0) {
-            List<Document> documents = author.getDocuments().stream()
-                        .map(document-> documentRepository.findById(document.getId())
-                        .orElseThrow(()-> new DocumentNotFoundException("No Such Document Exists with id "+document.getId())))
-                        .toList();
-                        
-            // Not working
-            author.getDocuments().add(documents.get(0));
-        }
-        authorRepository.save(author);
-        return "Success";
-        //return authorRepository.save(author);
+        Author author = modelMapper.map(authorDto, Author.class);
+        return modelMapper.map(authorRepository.save(author),AuthorDTO.class);
     }
 
     public List<AuthorDTO> getAllAuthors() {
-        return authorRepository.findAll().stream().map(author-> {
-            List<DocumentDTO> documentDtos = author.getDocuments().stream()
-                .map(document-> {
-                    List<ReferenceDTO> referenceDtos = document.getReferences().stream()
-                                            .map(reference-> new ReferenceDTO(reference.getId(),reference.getReference())).toList();
-                    return new DocumentDTO(document.getId(),document.getTitle(), document.getBody(),referenceDtos);
-                }).toList();
-            AuthorDTO authorDto = new AuthorDTO(author.getId(), author.getFirstName(), author.getLastName(),documentDtos);
-            return authorDto;
-        }).toList();
+        return authorRepository.findAll().stream().map(author-> convertEntityToDTO(author)).toList();
     }
 
     public AuthorDTO getAuthorById(long id) {
-        return authorRepository.findById(id).map(author-> {
-            List<DocumentDTO> documentDtos = author.getDocuments().stream()
-                .map(document-> {
-                    List<ReferenceDTO> referenceDtos = document.getReferences().stream()
-                                            .map(reference-> new ReferenceDTO(reference.getId(),reference.getReference())).toList();
-                    return new DocumentDTO(document.getId(),document.getTitle(),
-                                                document.getBody(),referenceDtos);
-                }).toList();
-            AuthorDTO authorDto = new AuthorDTO(author.getId(), author.getFirstName(), author.getLastName(),documentDtos);
-            return authorDto;
-        }).orElseThrow(()-> new AuthorNotFoundException("No Such Author Exists with id "+id));
+        return authorRepository.findById(id).map(author-> convertEntityToDTO(author))
+                            .orElseThrow(()-> new AuthorNotFoundException("No Such Author Exists with id "+id));
     }
 
-    public Author updateAuthor(long authorId, Author author) {
+    public AuthorDTO updateAuthor(long authorId, AuthorDTO authorDto) {
         Author originalAuthor = authorRepository.findById(authorId)
                             .orElseThrow(()-> new AuthorNotFoundException("No Such Author Exists with id "+authorId));
 
-        if (Objects.nonNull(author.getFirstName()) && !"".equalsIgnoreCase(author.getFirstName())) {
-            originalAuthor.setFirstName(author.getFirstName());
+        if (Objects.nonNull(authorDto.getFirstName()) && !"".equalsIgnoreCase(authorDto.getFirstName())) {
+            originalAuthor.setFirstName(authorDto.getFirstName());
         }
-        if (Objects.nonNull(author.getLastName()) && !"".equalsIgnoreCase(author.getLastName())) {
-            originalAuthor.setLastName(author.getLastName());
+        if (Objects.nonNull(authorDto.getLastName()) && !"".equalsIgnoreCase(authorDto.getLastName())) {
+            originalAuthor.setLastName(authorDto.getLastName());
         }
-        if(Objects.nonNull(author.getDocuments()) && author.getDocuments().size()>0) {
-            List<Document> documents = author.getDocuments().stream()
+        if(Objects.nonNull(authorDto.getDocuments()) && authorDto.getDocuments().size()>0) {
+            List<Document> documents = authorDto.getDocuments().stream()
                         .map(document-> documentRepository.findById(document.getId())
                         .orElseThrow(()-> new DocumentNotFoundException("No Such Document Exists with id "+document.getId())))
                         .toList();
@@ -106,7 +78,7 @@ public class AuthorService {
                 documentRepository.save(document);
             });
         }
-        return authorRepository.save(originalAuthor);
+        return convertEntityToDTO(authorRepository.save(originalAuthor));
     }
 
 
@@ -117,5 +89,19 @@ public class AuthorService {
             return true;
         }
         return false;
+    }
+
+    public AuthorDTO convertEntityToDTO(Author authorEntity) {
+        List<DocumentDTO> documentDtos = authorEntity.getDocuments().stream()
+                .map(document-> {
+                    List<ReferenceDTO> referenceDtos = document.getReferences().stream()
+                                            .map(reference-> new ReferenceDTO(reference.getId(), reference.getReference())).toList();
+                    List<AuthorDTO> authorDtos = document.getAuthors().stream()
+                                            .map(author-> new AuthorDTO(author.getId(), author.getFirstName(), author.getLastName())).toList();
+                    return new DocumentDTO(document.getId(), document.getTitle(),
+                                                document.getBody(), referenceDtos, authorDtos);
+                }).toList();
+        AuthorDTO authorDto = new AuthorDTO(authorEntity.getId(), authorEntity.getFirstName(), authorEntity.getLastName(),documentDtos);
+        return authorDto;
     }
 }
