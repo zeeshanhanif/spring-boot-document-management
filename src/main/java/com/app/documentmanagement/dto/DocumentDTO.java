@@ -2,8 +2,6 @@ package com.app.documentmanagement.dto;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -24,7 +22,7 @@ public class DocumentDTO {
     private long id;
     private String title;
     private String body;
-    private List<String> references;
+    private List<ReferenceDTO> references;
     private List<AuthorDTO> authors;
     
     public DocumentDTO(long id, String title, String body) {
@@ -33,7 +31,7 @@ public class DocumentDTO {
         this.body = body;
     }
 
-    public DocumentDTO(long id, String title, String body, List<String> references) {
+    public DocumentDTO(long id, String title, String body, List<ReferenceDTO> references) {
         this.id = id;
         this.title = title;
         this.body = body;
