@@ -3,6 +3,7 @@ package com.app.documentmanagement.services;
 import java.util.List;
 import java.util.Objects;
 
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,6 @@ import com.app.documentmanagement.exceptions.AuthorNullValueException;
 import com.app.documentmanagement.exceptions.DocumentNotFoundException;
 import com.app.documentmanagement.repositories.AuthorRepository;
 import com.app.documentmanagement.repositories.DocumentRepository;
-
-import org.modelmapper.ModelMapper;
 
 @Service
 public class AuthorService {

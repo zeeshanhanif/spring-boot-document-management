@@ -3,6 +3,7 @@ package com.app.documentmanagement.services;
 import java.util.List;
 import java.util.Objects;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,6 @@ import com.app.documentmanagement.exceptions.DocumentNullValueException;
 import com.app.documentmanagement.repositories.AuthorRepository;
 import com.app.documentmanagement.repositories.DocumentRepository;
 
-import org.modelmapper.ModelMapper;
 
 @Service
 public class DocumentService {
