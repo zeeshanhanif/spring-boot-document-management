@@ -5,6 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,11 @@ import lombok.ToString;
 public class AuthorDTO {
     
     private long id;
+
+    @NotBlank(message = "First Name is mandatory")
     private String firstName;
+
+    @NotBlank(message = "Last Name is mandatory")
     private String lastName;
     private List<DocumentDTO> documents;
 
