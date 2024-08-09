@@ -24,7 +24,7 @@ import jakarta.validation.Valid;
 
 
 @RestController
-@RequestMapping("authors")
+@RequestMapping("api/authors")
 public class AuthorController {
 
     private static final Logger log = LoggerFactory.getLogger(AuthorController.class);

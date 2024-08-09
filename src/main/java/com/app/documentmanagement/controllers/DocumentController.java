@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
-@RequestMapping("documents")
+@RequestMapping("api/documents")
 public class DocumentController {
     
     @Autowired
