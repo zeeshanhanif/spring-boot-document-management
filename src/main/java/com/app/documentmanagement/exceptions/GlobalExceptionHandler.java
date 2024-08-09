@@ -32,6 +32,12 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
+    @ExceptionHandler(value = DocumentAttachedToAuthorException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody ErrorResponse handleException(DocumentAttachedToAuthorException exception){
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
+
     @ExceptionHandler(value = DocumentNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public @ResponseBody ErrorResponse handleException(DocumentNotFoundException exception){
@@ -61,6 +67,7 @@ public class GlobalExceptionHandler {
         });
         return new ValidationErrorResponse(HttpStatus.BAD_REQUEST.value(),errors);
     }
+
 
     @ExceptionHandler(value = Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
