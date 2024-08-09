@@ -13,6 +13,8 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +25,7 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+//@ToString
 @Entity
 @Table(name = "documents")
 public class Document {
@@ -32,11 +34,15 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @Column(nullable = false)
     private String title;
-    @Column(length = 1000)
+        
+    @Size(max = 1000)
+    @Column(length = 1000, nullable = false)
     private String body;
-
+    
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "document_id")
     private List<Reference> references;
 
     @ManyToMany
