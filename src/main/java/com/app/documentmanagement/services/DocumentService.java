@@ -12,6 +12,7 @@ import com.app.documentmanagement.dto.DocumentDTO;
 import com.app.documentmanagement.dto.ReferenceDTO;
 import com.app.documentmanagement.entities.Author;
 import com.app.documentmanagement.entities.Document;
+import com.app.documentmanagement.entities.Reference;
 import com.app.documentmanagement.exceptions.AuthorNotFoundException;
 import com.app.documentmanagement.exceptions.DocumentNotFoundException;
 import com.app.documentmanagement.exceptions.DocumentNullValueException;
@@ -44,8 +45,10 @@ public class DocumentService {
         } else {
             throw new DocumentNullValueException("Authors must be provided");
         }
-        Document document = modelMapper.map(documentDto, Document.class);
-        return modelMapper.map(documentRepository.save(document),DocumentDTO.class);
+        Document document = convertToDocumentEntityFromDoucmentDTO(documentDto);
+        return convertEntityToDTO(documentRepository.save(document));
+        //Document document = modelMapper.map(documentDto, Document.class);
+        //return modelMapper.map(documentRepository.save(document),DocumentDTO.class);
     }
 
     public List<DocumentDTO> getAllDocuments() {
@@ -97,5 +100,15 @@ public class DocumentService {
         DocumentDTO documentDto = new DocumentDTO(documentEntity.getId(), documentEntity.getTitle(),
                                 documentEntity.getBody(), referenceDtos, authorDtos);
         return documentDto;
+    }
+
+    public Document convertToDocumentEntityFromDoucmentDTO(DocumentDTO documentDto) {
+        List<Reference> references = documentDto.getReferences().stream()
+                            .map(referenceDto -> new Reference(referenceDto.getId(),referenceDto.getReference()))
+                            .toList();
+        List<Author> authors = documentDto.getAuthors().stream()
+                            .map(authorDto -> new Author(authorDto.getId(),authorDto.getFirstName(),authorDto.getLastName()))
+                            .toList();
+        return new Document(documentDto.getId(),documentDto.getTitle(),documentDto.getBody(),references,authors);
     }
 }
