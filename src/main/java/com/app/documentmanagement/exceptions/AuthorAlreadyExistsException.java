@@ -6,8 +6,7 @@ package com.app.documentmanagement.exceptions;
  * tries to add similar author
  * 
  * @author Zeeshan Hanif
- * @see AuthorRepository
- * @see AuthorServiceImpl 
+ * @see DocumentManagementException
  */
 public class AuthorAlreadyExistsException extends DocumentManagementException {
     
