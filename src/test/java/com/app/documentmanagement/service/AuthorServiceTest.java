@@ -24,7 +24,6 @@ import org.springframework.context.annotation.Bean;
 
 import com.app.documentmanagement.repositories.AuthorRepository;
 import com.app.documentmanagement.repositories.DocumentRepository;
-import com.app.documentmanagement.services.AuthorService;
 import com.app.documentmanagement.services.AuthorServiceImpl;
 
 import static org.mockito.BDDMockito.given;

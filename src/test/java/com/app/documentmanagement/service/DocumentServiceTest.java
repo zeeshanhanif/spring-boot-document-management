@@ -27,9 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.app.documentmanagement.repositories.AuthorRepository;
 import com.app.documentmanagement.repositories.DocumentRepository;
-import com.app.documentmanagement.services.AuthorService;
 import com.app.documentmanagement.services.AuthorServiceImpl;
-import com.app.documentmanagement.services.DocumentService;
 import com.app.documentmanagement.services.DocumentServiceImpl;
 
 import static org.mockito.BDDMockito.given;

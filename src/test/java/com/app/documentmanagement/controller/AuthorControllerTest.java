@@ -39,7 +39,6 @@ import com.app.documentmanagement.entities.Reference;
 import com.app.documentmanagement.exceptions.AuthorNotFoundException;
 import com.app.documentmanagement.exceptions.AuthorNullValueException;
 import com.app.documentmanagement.exceptions.DocumentAttachedToAuthorException;
-import com.app.documentmanagement.services.AuthorService;
 import com.app.documentmanagement.services.AuthorServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
