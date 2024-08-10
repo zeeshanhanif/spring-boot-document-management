@@ -12,9 +12,21 @@ import com.app.documentmanagement.entities.Reference;
 import com.app.documentmanagement.repositories.AuthorRepository;
 import com.app.documentmanagement.repositories.DocumentRepository;
 
+/**
+ * Configuration class to initialize database with few objects to operate on
+ * @author Zeeshan Hanif
+ */
 @Configuration
 public class DatabaseLoader {
     
+    /**
+     * To initialize instance of {@Code CommandLineRunner} that will be called by Spring boot framework
+     * and it will initialize {@Code Author} and {@Code Document} objects
+     * 
+     * @param authorRepository
+     * @param documentRepository
+     * @return {@Code CommandLineRunner} implementation that will be callled by Spring Boot framework
+     */
     @Bean
     CommandLineRunner init(AuthorRepository authorRepository, DocumentRepository documentRepository){
         return args -> {
