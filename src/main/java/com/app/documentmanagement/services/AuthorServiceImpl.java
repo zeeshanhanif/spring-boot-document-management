@@ -23,20 +23,53 @@ import com.app.documentmanagement.exceptions.DocumentNotFoundException;
 import com.app.documentmanagement.repositories.AuthorRepository;
 import com.app.documentmanagement.repositories.DocumentRepository;
 
+/**
+ * This {@Code AuthorServiceImpl} class provides implementation for the methods {@Code AuthorService}.
+ * {@Code AuthorServiceImpl} will to interact with database repository to perform database operation.
+ * Also this class will act as Service for Spring Boot framework
+ * 
+ * @author Zeeshan Hanif
+ * @see AuthorRepository
+ * @see AuthorService 
+ */
 @Service
 public class AuthorServiceImpl implements AuthorService{
     
     private static final Logger log = LoggerFactory.getLogger(AuthorService.class);
 
+    /**
+     * {@Code AuthorRepository} to interact with author table of database.
+     * It will be auto wired by spring boot framework
+     */
     @Autowired
     private AuthorRepository authorRepository;
 
+    /**
+     * {@Code DocumentRepository} to interact with document table of database
+     * It will be auto wired by spring boot framework
+     */
     @Autowired
     private DocumentRepository documentRepository;
 
+    /**
+     * {@Code ModelMapper} to map object properties from database entities to data transfer objects
+     * It will be auto wired by spring boot framework
+     */
     @Autowired
     private ModelMapper modelMapper;
     
+
+    /**
+     * This method will save {@Code Author} data into database using {@Code AuthorRepository} if 
+     * data provided is valid. 
+     * Returns {@Code AuthorDTO} after saving data into database. If the first name or last name 
+     * is not provided, then there will be an error 
+     * 
+     * @param authorDto {@Code AuthorDTO} object that will be saved into database
+     * @return {@Code AuthorDTO} that is returned from database repository
+     * @throws AuthorNullValueException if first name or last name is null or empty
+     * @throws AuthorAlreadyExistsException if author with same first and last name already exists 
+     */
     @Override
     public AuthorDTO saveAuthor(AuthorDTO authorDto){
         if(authorDto.getFirstName() == null || "" == authorDto.getFirstName()
@@ -50,21 +83,45 @@ public class AuthorServiceImpl implements AuthorService{
         Author author = new Author(authorDto.getId(),authorDto.getFirstName(),authorDto.getLastName());
         Author savedAuthor = authorRepository.save(author);
         return new AuthorDTO(savedAuthor.getId(),savedAuthor.getFirstName(),savedAuthor.getLastName());
+        
+        // TODO: findout later on why modelMapper injection not working in test cases
         //Author author = modelMapper.map(authorDto, Author.class);
         //return modelMapper.map(authorRepository.save(author),AuthorDTO.class);
     }
 
+    /**
+     * This method will return {@Code List} of {@Code AuthorDTO} from database using {@Code AuthorRepository} if 
+     * there is no data then it will return empty list. 
+     * 
+     * @return {@Code List} of {@Code AuthorDTO} that is returned from database repository 
+     */
     @Override
     public List<AuthorDTO> getAllAuthors() {
         return authorRepository.findAll().stream().map(author-> convertEntityToDTO(author)).toList();
     }
 
+    /**
+     * This method will return {@Code AuthorDTO} from database using provided id
+     * 
+     * @param id id of author to be found
+     * @return {@Code AuthorDTO} that is returned from database repository
+     * @throws AuthorNotFoundException if id provided does not exists
+     */
     @Override
     public AuthorDTO getAuthorById(long id) {
         return authorRepository.findById(id).map(author-> convertEntityToDTO(author))
                             .orElseThrow(()-> new AuthorNotFoundException("No Such Author Exists with id "+id));
     }
 
+    /**
+     * Update the {@Code Author} data into database using {@Code AuthorRepository} if data provided is valid.
+     * 
+     * @param authorId id for {@Code Author} that needs to be updated
+     * @param authorDto DTO object that will be updated into database
+     * @return {@Code AuthorDTO} that is returned from database repository
+     * @throws AuthorNotFoundException if id provided does not exists in database
+     * @throws DocumentNotFoundException if any {@Code Document} from the list provided does not exists in database
+     */
     @Override
     public AuthorDTO updateAuthor(long authorId, AuthorDTO authorDto) {
         Author originalAuthor = authorRepository.findById(authorId)
@@ -90,6 +147,16 @@ public class AuthorServiceImpl implements AuthorService{
         return convertEntityToDTO(authorRepository.save(originalAuthor));
     }
 
+    /**
+     * Delete the {@Code Author} from database using provided id.
+     * {@Code Author} cannot be deleted if it is assigned to any document in database.
+     * Need to remove reference from those document before deleting the {@Code Author} 
+     * 
+     * @param id id for {@Code Author} that needs to be deleted
+     * @return {@Code true} if {@Code Author} deleted successfully
+     * @throws AuthorNotFoundException if id provided does not exists in database
+     * @throws DocumentAttachedToAuthorException if any document is assigned to author
+     */
     @Override
     public boolean deleteAuthorById(long id){
         Author author = authorRepository.findById(id).orElseThrow(()-> new AuthorNotFoundException("No Such Author Exists with id "+id));
@@ -103,6 +170,14 @@ public class AuthorServiceImpl implements AuthorService{
         return false;
     }
 
+    /**
+     * Utitlity method to convert {@Code Author} entity to {@Code AuthorDTO} DTO
+     * This mehtod will convert all the nested documents {@Code Document} and references {@Code Reference}
+     * related to it as well to their respective DTOs
+     * 
+     * @param authorEntity {@Code Author} that needs to be converted
+     * @return {@Code AuthorDTO} after mapping all the properites from {@Code Author}
+     */
     @Override
     public AuthorDTO convertEntityToDTO(Author authorEntity) {
         List<DocumentDTO> documentDtos = new ArrayList<DocumentDTO>();
