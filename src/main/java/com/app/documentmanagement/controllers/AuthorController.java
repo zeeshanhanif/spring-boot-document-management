@@ -3,7 +3,6 @@ package com.app.documentmanagement.controllers;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.documentmanagement.dto.AuthorDTO;
-import com.app.documentmanagement.entities.Author;
 import com.app.documentmanagement.services.AuthorService;
 
 import java.util.List;

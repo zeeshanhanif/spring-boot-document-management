@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.documentmanagement.dto.DocumentDTO;
-import com.app.documentmanagement.entities.Document;
 import com.app.documentmanagement.services.DocumentService;
 
 import jakarta.validation.Valid;
