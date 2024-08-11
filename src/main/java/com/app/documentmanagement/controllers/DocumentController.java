@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,16 +27,28 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-import org.springframework.web.bind.annotation.PutMapping;
-
+/**
+ * {@Code DocumentController} is exposing api endpoints for CRUD operation and management of Document
+ * 
+ * @author Zeeshan Hanif
+ */
 @Tag(name = "Document", description = "Document Management APIs")
 @RestController
 @RequestMapping("api/documents")
 public class DocumentController {
     
+    /**
+     * {@Code documentService} to interact with document
+     * It will be auto wired by spring boot framework
+     */
     @Autowired
     private DocumentService documentService;
 
+    /**
+     * This method is exposing GET 'api/authors' endpoint to get all the documents {@Code Document} 
+     * 
+     * @return {@Code List} of {@Code DocumentDTO} that is returned from {@Code DocumentService} 
+     */
     @Operation(summary = "Get all the Doucments", description = "Get all the Doucments object. The response is List of Doucment object with id, title, body, references and authors",
                         tags = { "Get" })
     @ApiResponses(value = { 
@@ -46,6 +59,11 @@ public class DocumentController {
         return ResponseEntity.status(HttpStatus.OK).body(documentService.getAllDocuments());
     }
 
+    /**
+     * This method is exposing GET 'api/authors/{id}' endpoint to get {@Code Document} specified by id 
+     * 
+     * @return {@Code DocumentDTO} that is returned from {@Code DocumentService} 
+     */
     @Operation(summary = "Get a document by its id", description = "Get a Doucment object by specifying its id. The response is a Document object with id, title, body, references and authors",
                         tags = { "Get" })
     @ApiResponses(value = { 
@@ -57,6 +75,11 @@ public class DocumentController {
         return ResponseEntity.status(HttpStatus.OK).body(documentService.getDocumentById(id));
     }
 
+    /**
+     * This method is exposing POST 'api/authors' endpoint to save {@Code Document} in system 
+     * 
+     * @return {@Code DocumentDTO} that is returned from {@Code DocumentService} after saving into database
+     */
     @Operation(summary = "Add Document into system", description = "Add a Document object into system. The response is a Document object with id, title, body, references and authors",
                         tags = { "Post" })
     @ApiResponses(value = { 
@@ -69,6 +92,11 @@ public class DocumentController {
         return ResponseEntity.status(HttpStatus.OK).body(documentService.saveDocument(documentDto));
     }
 
+    /**
+     * This method is exposing PUT 'api/authors/{id}' endpoint to update {@Code Document} in system 
+     * 
+     * @return {@Code DocumentDTO} that is returned from {@Code DocumentService} after updated into database
+     */
     @Operation(summary = "Update document by id", description = "Update an document object into system by specifying its id. The response is a Document object with  id and updated title, body, references and authors",
                         tags = { "Put" })
     @ApiResponses(value = { 
@@ -80,6 +108,11 @@ public class DocumentController {
         return ResponseEntity.status(HttpStatus.OK).body(documentService.updateDocument(id, documentDto));
     }
 
+    /**
+     * This method is exposing DELETE 'api/authors/{id}' endpoint to delete {@Code Document} specified by id 
+     * 
+     * @return {@Code String} message that show delete was successfull or not
+     */
     @Operation(summary = "Delete document by id", description = "Delete Document from the system by specifying its id. The response is a message stating that delete successful or not",
                         tags = { "Delete" })
     @ApiResponses(value = { 

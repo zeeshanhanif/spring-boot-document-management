@@ -6,6 +6,7 @@ import com.app.documentmanagement.dto.AuthorDTO;
 import com.app.documentmanagement.services.AuthorService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,8 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,16 +29,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import jakarta.validation.Valid;
 
+/**
+ * {@Code AuthorController} is exposing api endpoints for CRUD operation and management of Author
+ * 
+ * @author Zeeshan Hanif
+ */
 @Tag(name = "Author", description = "Author Management APIs")
 @RestController
 @RequestMapping("api/authors")
 public class AuthorController {
 
-    private static final Logger log = LoggerFactory.getLogger(AuthorController.class);
-
+    /**
+     * {@Code AuthorService} to interact with author
+     * It will be auto wired by spring boot framework
+     */
     @Autowired
     private AuthorService authorService;
 
+    /**
+     * This method is exposing GET 'api/authors' endpoint to get all the authors {@Code Author} 
+     * 
+     * @return {@Code List} of {@Code AuthorDTO} that is returned from {@Code AuthorService} 
+     */
     @Operation(summary = "Get all the Authors", description = "Get all the Authors object. The response is List of Authors object with id, first name, last name and doucments",
                         tags = { "Get" })
     @ApiResponses(value = { 
@@ -49,6 +61,11 @@ public class AuthorController {
         return ResponseEntity.status(HttpStatus.OK).body(authorService.getAllAuthors());
     }
 
+    /**
+     * This method is exposing GET 'api/authors/{id}' endpoint to get {@Code Author} specified by id 
+     * 
+     * @return {@Code AuthorDTO} that is returned from {@Code AuthorService} 
+     */
     @Operation(summary = "Get a author by its id", description = "Get a Author object by specifying its id. The response is a Author object with id, first name, last name and doucments",
                         tags = { "Get" })
     @ApiResponses(value = { 
@@ -60,6 +77,11 @@ public class AuthorController {
         return ResponseEntity.status(HttpStatus.OK).body(authorService.getAuthorById(id));
     }
 
+    /**
+     * This method is exposing POST 'api/authors' endpoint to save {@Code Author} in system 
+     * 
+     * @return {@Code AuthorDTO} that is returned from {@Code AuthorService} after saving into database
+     */
     @Operation(summary = "Add Author into system", description = "Add a Author object into system. The response is a Author object with id, first name, last name and doucments",
                         tags = { "Post" })
     @ApiResponses(value = { 
@@ -72,6 +94,11 @@ public class AuthorController {
         return ResponseEntity.status(HttpStatus.OK).body(authorService.saveAuthor(authorDto));
     }
 
+    /**
+     * This method is exposing PUT 'api/authors/{id}' endpoint to update {@Code Author} in system 
+     * 
+     * @return {@Code AuthorDTO} that is returned from {@Code AuthorService} after updated into database
+     */
     @Operation(summary = "Update author by id", description = "Update an Author object into system by specifying its id. The response is a Author object with  id and updated first name, last name and doucments",
                         tags = { "Put" })
     @ApiResponses(value = { 
@@ -83,6 +110,11 @@ public class AuthorController {
         return ResponseEntity.status(HttpStatus.OK).body(authorService.updateAuthor(id, authorDto));
     }
 
+    /**
+     * This method is exposing DELETE 'api/authors/{id}' endpoint to delete {@Code Author} specified by id 
+     * 
+     * @return {@Code String} message that show delete was successfull or not
+     */
     @Operation(summary = "Delete author by id", description = "Delete Author from the system by specifying its id. The response is a message stating that delete successful or not",
                         tags = { "Delete" })
     @ApiResponses(value = { 
