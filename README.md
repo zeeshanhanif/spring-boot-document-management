@@ -21,6 +21,9 @@ To run Test cases run the following command on root folder of application
 
 ./gradlew test
 
+# Test Result
+![image](https://github.com/user-attachments/assets/69eef763-84e2-4bed-a912-e2ba707a4c48)
+
 # API Documentation
 For Local environment API document will be avaiable on following URL
 
