@@ -19,6 +19,8 @@ import com.app.documentmanagement.exceptions.DocumentNullValueException;
 import com.app.documentmanagement.repositories.AuthorRepository;
 import com.app.documentmanagement.repositories.DocumentRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * This {@Code DocumentServiceImpl} class provides implementation for the methods {@Code DocumentService}.
  * {@Code DocumentServiceImpl} will to interact with database repository to perform database operation.
@@ -29,6 +31,7 @@ import com.app.documentmanagement.repositories.DocumentRepository;
  * @see DocumentService 
  */
 @Service
+@Slf4j
 public class DocumentServiceImpl implements DocumentService{
     
     /**
@@ -64,6 +67,7 @@ public class DocumentServiceImpl implements DocumentService{
      * @throws AuthorNotFoundException if any of authors provided does not exists in system
      */
     public DocumentDTO saveDocument(DocumentDTO documentDto){
+        log.info("Document Save: Started");
         if(documentDto.getTitle() == null || documentDto.getBody() == null) {
             throw new DocumentNullValueException("Title and body must be provided");
         }
@@ -77,6 +81,7 @@ public class DocumentServiceImpl implements DocumentService{
             throw new DocumentNullValueException("Authors must be provided");
         }
         Document document = convertToDocumentEntityFromDoucmentDTO(documentDto);
+        log.info("Document Save: Completed");
         return convertEntityToDTO(documentRepository.save(document));
 
         // TODO: findout later on why modelMapper injection not working in test cases
@@ -115,6 +120,7 @@ public class DocumentServiceImpl implements DocumentService{
      * @throws AuthorNotFoundException if any {@Code Author} from the list provided does not exists in database
      */
     public DocumentDTO updateDocument(long id, DocumentDTO documentDto) {
+        log.info("Document Update: Started");
         Document originalDocument = documentRepository.findById(id)
                                 .orElseThrow(()-> new DocumentNotFoundException("No Such Document Exists with id "+id));
         if (Objects.nonNull(documentDto.getTitle()) && !"".equalsIgnoreCase(documentDto.getTitle())) {
@@ -133,6 +139,7 @@ public class DocumentServiceImpl implements DocumentService{
                 originalDocument.getAuthors().addAll(authors);
             }
         }
+        log.info("Document Update: Completed");
         return convertEntityToDTO(documentRepository.save(originalDocument));
     }
 
@@ -144,11 +151,14 @@ public class DocumentServiceImpl implements DocumentService{
      * @throws DocumentNotFoundException if id provided does not exists in database
      */
     public boolean deleteDocumentById(long id){
+        log.info("Document Delete: Started");
         Document document = documentRepository.findById(id).orElseThrow(()-> new DocumentNotFoundException("No Such Document Exists with id "+id));
         if(document != null){
             documentRepository.deleteById(id);
+            log.info("Document Delete: Completed");
             return true;
         }
+        log.warn("Document Delete: Document not found");
         return false;
     }
     

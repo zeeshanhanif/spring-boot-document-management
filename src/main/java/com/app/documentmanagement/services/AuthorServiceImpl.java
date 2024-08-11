@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +21,8 @@ import com.app.documentmanagement.exceptions.DocumentNotFoundException;
 import com.app.documentmanagement.repositories.AuthorRepository;
 import com.app.documentmanagement.repositories.DocumentRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * This {@Code AuthorServiceImpl} class provides implementation for the methods {@Code AuthorService}.
  * {@Code AuthorServiceImpl} will to interact with database repository to perform database operation.
@@ -33,9 +33,8 @@ import com.app.documentmanagement.repositories.DocumentRepository;
  * @see AuthorService 
  */
 @Service
+@Slf4j
 public class AuthorServiceImpl implements AuthorService{
-    
-    private static final Logger log = LoggerFactory.getLogger(AuthorService.class);
 
     /**
      * {@Code AuthorRepository} to interact with author table of database.
@@ -72,6 +71,7 @@ public class AuthorServiceImpl implements AuthorService{
      */
     @Override
     public AuthorDTO saveAuthor(AuthorDTO authorDto){
+        log.info("Author Save: Started");
         if(authorDto.getFirstName() == null || "" == authorDto.getFirstName()
                         || authorDto.getLastName() == null || "" == authorDto.getLastName()){
             throw new AuthorNullValueException("First Name and Last Name must be provided");
@@ -82,6 +82,7 @@ public class AuthorServiceImpl implements AuthorService{
         }
         Author author = new Author(authorDto.getId(),authorDto.getFirstName(),authorDto.getLastName());
         Author savedAuthor = authorRepository.save(author);
+        log.info("Author Save: Completed");
         return new AuthorDTO(savedAuthor.getId(),savedAuthor.getFirstName(),savedAuthor.getLastName());
         
         // TODO: findout later on why modelMapper injection not working in test cases
@@ -124,6 +125,7 @@ public class AuthorServiceImpl implements AuthorService{
      */
     @Override
     public AuthorDTO updateAuthor(long authorId, AuthorDTO authorDto) {
+        log.info("Author Updated: Started");
         Author originalAuthor = authorRepository.findById(authorId)
                             .orElseThrow(()-> new AuthorNotFoundException("No Such Author Exists with id "+authorId));
 
@@ -144,6 +146,7 @@ public class AuthorServiceImpl implements AuthorService{
                 documentRepository.save(document);
             });
         }
+        log.info("Author Updated: Completed");
         return convertEntityToDTO(authorRepository.save(originalAuthor));
     }
 
@@ -159,14 +162,17 @@ public class AuthorServiceImpl implements AuthorService{
      */
     @Override
     public boolean deleteAuthorById(long id){
+        log.info("Author Delete: Started");
         Author author = authorRepository.findById(id).orElseThrow(()-> new AuthorNotFoundException("No Such Author Exists with id "+id));
         if(author != null && author.getDocuments() != null && author.getDocuments().size()>0) {
             throw new DocumentAttachedToAuthorException("Author cannot be delete if document is attached");
         }
         if(author != null){
             authorRepository.deleteById(id);
+            log.info("Author Delete: Completed");
             return true;
         }
+        log.warn("Author Delete: Author not found");
         return false;
     }
 

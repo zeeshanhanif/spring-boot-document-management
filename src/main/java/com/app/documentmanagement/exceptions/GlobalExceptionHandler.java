@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Map;
 import java.util.HashMap;
 
@@ -19,6 +21,7 @@ import java.util.HashMap;
  * @author Zeeshan Hanif
  */
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
     
@@ -32,6 +35,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = AuthorNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public @ResponseBody ErrorResponse handleException(AuthorNotFoundException exception){
+        log.error(String.format("AuthorNotFoundException: StatusCode: %s -- Message: %s",HttpStatus.NOT_FOUND.value(),exception.getMessage()));
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
 
@@ -45,6 +49,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = AuthorAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public @ResponseBody ErrorResponse handleException(AuthorAlreadyExistsException exception){
+        log.error(String.format("AuthorAlreadyExistsException: StatusCode: %s -- Message: %s",HttpStatus.CONFLICT.value(),exception.getMessage()));
         return new ErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage());
     }
 
@@ -58,6 +63,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = AuthorNullValueException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorResponse handleException(AuthorNullValueException exception){
+        log.error(String.format("AuthorNullValueException: StatusCode: %s -- Message: %s",HttpStatus.BAD_REQUEST.value(),exception.getMessage()));
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
@@ -71,6 +77,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = DocumentAttachedToAuthorException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorResponse handleException(DocumentAttachedToAuthorException exception){
+        log.error(String.format("DocumentAttachedToAuthorException: StatusCode: %s -- Message: %s",HttpStatus.BAD_REQUEST.value(),exception.getMessage()));
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
@@ -84,6 +91,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = DocumentNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public @ResponseBody ErrorResponse handleException(DocumentNotFoundException exception){
+        log.error(String.format("DocumentNotFoundException: StatusCode: %s -- Message: %s",HttpStatus.NOT_FOUND.value(),exception.getMessage()));
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
 
@@ -97,6 +105,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = DocumentAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public @ResponseBody ErrorResponse handleException(DocumentAlreadyExistsException exception){
+        log.error(String.format("DocumentAlreadyExistsException: StatusCode: %s -- Message: %s",HttpStatus.CONFLICT.value(),exception.getMessage()));
         return new ErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage());
     }
 
@@ -110,6 +119,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = DocumentNullValueException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorResponse handleException(DocumentNullValueException exception){
+        log.error(String.format("DocumentNullValueException: StatusCode: %s -- Message: %s",HttpStatus.BAD_REQUEST.value(),exception.getMessage()));
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
     
@@ -129,6 +139,7 @@ public class GlobalExceptionHandler {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
+            log.error(String.format("MethodArgumentNotValidException: StatusCode: %s -- Field: %s -- Error Message: %s",HttpStatus.BAD_REQUEST.value(), fieldName, errorMessage));
         });
         return new ValidationErrorResponse(HttpStatus.BAD_REQUEST.value(),errors);
     }
@@ -143,6 +154,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorResponse handleException(Exception exception){
+        log.error(String.format("Exception: StatusCode: %s -- Message: %s",HttpStatus.BAD_REQUEST.value(),exception.getMessage()));
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
