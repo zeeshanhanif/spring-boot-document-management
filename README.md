@@ -6,6 +6,8 @@ Spring Boot application for Document Management
 To run the application follow the steps below:  
 ~~~sh 
 ./gradlew build
+~~~
+~~~sh 
 docker compose up --build
 ~~~
 
