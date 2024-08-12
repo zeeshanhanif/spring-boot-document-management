@@ -3,9 +3,11 @@
 Spring Boot application for Document Management
 
 # Run application with Docker
-To run the application follow the steps below  
-1. ~~~sh ./gradlew build ~~~
-2. ~~~sh docker compose up --build ~~~
+To run the application follow the steps below:  
+~~~sh 
+./gradlew build
+docker compose up --build
+~~~
 
 ###### APIs can be called on following endpoint
 1. http://localhost:8080/api/authors  
@@ -23,6 +25,7 @@ To run Test cases run the following command on root folder of application
 # API Documentation
 For Local environment API document will be avaiable on following URL  
 http://localhost:8080/swagger-ui/index.html
+
 
 
 # Failover
