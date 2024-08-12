@@ -3,10 +3,10 @@ package com.app.documentmanagement.controllers;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.documentmanagement.dto.AuthorDTO;
+import com.app.documentmanagement.rabbitmq.service.producer.MessageProducerService;
 import com.app.documentmanagement.services.AuthorService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +44,9 @@ public class AuthorController {
      */
     @Autowired
     private AuthorService authorService;
+
+    @Autowired
+    private MessageProducerService messageProducerService;
 
     /**
      * This method is exposing GET 'api/authors' endpoint to get all the authors {@Code Author} 
@@ -133,5 +135,24 @@ public class AuthorController {
             return ResponseEntity.status(HttpStatus.OK).body("Unable to Delete");
         }
     }
-    
+
+    /**
+     * This method is exposing DELETE 'api/authors/queue/{id}' endpoint to send delete event for message
+     * streaming service
+     * 
+     * @return {@Code String} message that show event was sent successfully
+     */
+    @Operation(summary = "Send Delete Event based on author id", description = "Send Delete event to message service to delete Document from the system by specifying its id. The response is a message stating that message sent",
+                        tags = { "Delete" })
+    @ApiResponses(value = { 
+        @ApiResponse(responseCode = "200", description = "Delete Message send successfully to messaging service", content = { @Content(mediaType = "application/json") }),
+        @ApiResponse(responseCode = "404", description = "Author not found with specified id", content = @Content(mediaType = "application/json")),
+    })
+    @DeleteMapping("/queue/{id}")
+    public ResponseEntity<String> sendEventToDeleteDocumentById(@PathVariable long id){
+        AuthorDTO authorDTO = authorService.getAuthorById(id);
+        messageProducerService.sendAuthorMessage(authorDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Author Delete Event Sent Successfully");
+    }
 }

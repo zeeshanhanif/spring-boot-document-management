@@ -54,7 +54,7 @@ public class Author {
      * 
      * @see {@Code Document}
      */
-    @ManyToMany(mappedBy = "authors")
+    @ManyToMany(mappedBy = "authors", fetch = FetchType.EAGER)
     private List<Document> documents;
     
     /**

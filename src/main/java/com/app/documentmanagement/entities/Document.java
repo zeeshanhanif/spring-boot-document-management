@@ -71,7 +71,7 @@ public class Document {
      * 
      * @see Author
      */
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "document_author",
         joinColumns = {@JoinColumn(name="documentId",referencedColumnName = "id")},

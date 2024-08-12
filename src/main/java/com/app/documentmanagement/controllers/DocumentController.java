@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.documentmanagement.dto.DocumentDTO;
+import com.app.documentmanagement.rabbitmq.service.producer.MessageProducerService;
 import com.app.documentmanagement.services.DocumentService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,6 +43,9 @@ public class DocumentController {
      */
     @Autowired
     private DocumentService documentService;
+
+    @Autowired
+    private MessageProducerService messageProducerService;
 
     /**
      * This method is exposing GET 'api/documents' endpoint to get all the documents {@Code Document} 
@@ -127,5 +131,25 @@ public class DocumentController {
         else {
             return ResponseEntity.status(HttpStatus.OK).body("Unable to Delete");
         }
+    }
+
+    /**
+     * This method is exposing DELETE 'api/documents/queue/{id}' endpoint to send delete event for message
+     * streaming service
+     * 
+     * @return {@Code String} message that show event was sent successfully
+     */
+    @Operation(summary = "Send Delete Event based on document id", description = "Send Delete event to message service to delete Document from the system by specifying its id. The response is a message stating that message sent",
+                        tags = { "Delete" })
+    @ApiResponses(value = { 
+        @ApiResponse(responseCode = "200", description = "Delete Message send successfully to messaging service", content = { @Content(mediaType = "application/json") }),
+        @ApiResponse(responseCode = "404", description = "Document not found with specified id", content = @Content(mediaType = "application/json"))
+    })
+    @DeleteMapping("/queue/{id}")
+    public ResponseEntity<String> sendEventToDeleteDocumentById(@PathVariable long id){
+        DocumentDTO documentDTO = documentService.getDocumentById(id);
+        messageProducerService.sendDocumentMessage(documentDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Document Delete Event Sent Successfully");
     }
 }
