@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.documentmanagement.dto.AuthorDTO;
 import com.app.documentmanagement.dto.DocumentDTO;
 import com.app.documentmanagement.services.DocumentService;
 
@@ -45,7 +44,7 @@ public class DocumentController {
     private DocumentService documentService;
 
     /**
-     * This method is exposing GET 'api/authors' endpoint to get all the documents {@Code Document} 
+     * This method is exposing GET 'api/documents' endpoint to get all the documents {@Code Document} 
      * 
      * @return {@Code List} of {@Code DocumentDTO} that is returned from {@Code DocumentService} 
      */
@@ -60,7 +59,7 @@ public class DocumentController {
     }
 
     /**
-     * This method is exposing GET 'api/authors/{id}' endpoint to get {@Code Document} specified by id 
+     * This method is exposing GET 'api/documents/{id}' endpoint to get {@Code Document} specified by id 
      * 
      * @return {@Code DocumentDTO} that is returned from {@Code DocumentService} 
      */
@@ -76,7 +75,7 @@ public class DocumentController {
     }
 
     /**
-     * This method is exposing POST 'api/authors' endpoint to save {@Code Document} in system 
+     * This method is exposing POST 'api/documents' endpoint to save {@Code Document} in system 
      * 
      * @return {@Code DocumentDTO} that is returned from {@Code DocumentService} after saving into database
      */
@@ -93,14 +92,14 @@ public class DocumentController {
     }
 
     /**
-     * This method is exposing PUT 'api/authors/{id}' endpoint to update {@Code Document} in system 
+     * This method is exposing PUT 'api/documents/{id}' endpoint to update {@Code Document} in system 
      * 
      * @return {@Code DocumentDTO} that is returned from {@Code DocumentService} after updated into database
      */
     @Operation(summary = "Update document by id", description = "Update an document object into system by specifying its id. The response is a Document object with  id and updated title, body, references and authors",
                         tags = { "Put" })
     @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "Author updated successfully", content = { @Content(schema = @Schema(implementation = AuthorDTO.class), mediaType = "application/json") }),
+        @ApiResponse(responseCode = "200", description = "Author updated successfully", content = { @Content(schema = @Schema(implementation = DocumentDTO.class), mediaType = "application/json") }),
         @ApiResponse(responseCode = "404", description = "There can be two different erors:<br>1) Document not found with specified id<br>OR<br>2) Author not found, when try to update author of document but that author does not exists in system", content = @Content(mediaType = "application/json")),
     })
     @PutMapping("/{id}")
@@ -109,14 +108,14 @@ public class DocumentController {
     }
 
     /**
-     * This method is exposing DELETE 'api/authors/{id}' endpoint to delete {@Code Document} specified by id 
+     * This method is exposing DELETE 'api/documents/{id}' endpoint to delete {@Code Document} specified by id 
      * 
      * @return {@Code String} message that show delete was successfull or not
      */
     @Operation(summary = "Delete document by id", description = "Delete Document from the system by specifying its id. The response is a message stating that delete successful or not",
                         tags = { "Delete" })
     @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "Document delete successfully", content = { @Content(schema = @Schema(implementation = AuthorDTO.class), mediaType = "application/json") }),
+        @ApiResponse(responseCode = "200", description = "Document delete successfully", content = { @Content( mediaType = "application/json") }),
         @ApiResponse(responseCode = "404", description = "Document not found with specified id", content = @Content(mediaType = "application/json"))
     })
     @DeleteMapping("/{id}")

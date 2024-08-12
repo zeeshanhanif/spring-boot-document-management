@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * Database Entity for {@Code Reference} that represent table in database
@@ -23,7 +22,6 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@ToString
 @Entity
 @Table(name = "references")
 public class Reference {
